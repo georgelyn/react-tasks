@@ -1,0 +1,21 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #282c34;
+  color: #e9ecf4;
+  width: 100%;
+  height: 100vh;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* #root {
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+} */
