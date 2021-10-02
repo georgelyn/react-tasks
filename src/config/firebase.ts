@@ -1,5 +1,6 @@
 import { getAuth } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
+import { getFirestore, collection } from 'firebase/firestore';
 
 const config = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY?.toString(),
@@ -14,3 +15,9 @@ const config = {
 
 export const app = initializeApp(config);
 export const auth = getAuth(app);
+
+const fs = getFirestore();
+export const db = {
+  tasks: collection(fs, 'tasks'),
+  projects: collection(fs, 'projects'),
+};

@@ -1,0 +1,80 @@
+.tasks-container {
+  /* width: 100%;
+  height: 100vh;
+  overflow: auto; */
+}
+
+/* temporal - hasta tener header */
+body {
+  overflow: auto;
+}
+
+.grid-wrapper {
+  --gap: 1em;
+  --columns: 4;
+  max-width: 60rem;
+  margin: 0 auto;
+  display: column;
+  columns: var(--columns);
+  gap: var(--gap);
+  color: #000;
+}
+
+.grid-wrapper > * {
+  break-inside: avoid;
+  margin-bottom: var(--gap);
+}
+
+.flow > * + * {
+  margin-top: 1rem;
+}
+
+.tasks-content {
+  padding: 1em;
+  /* box-shadow: 0 0 3em rgba(0, 0, 0, 0.15); */
+  background: white;
+  border-radius: 5px;
+}
+
+.tasks-content p {
+  max-height: 400px;
+  overflow-y: auto;
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.tasks-content p::-webkit-scrollbar {
+  display: none;
+}
+
+.tasks-title {
+  font-weight: 900;
+  color: #ee6352;
+  line-height: 0.8;
+}
+
+.tasks-desc:hover {
+  cursor: pointer;
+}
+
+.tasks-icons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.fa-icon-trash:hover {
+  color: #ee6352;
+  cursor: pointer;
+}
+
+.fa-icon-pencil:hover {
+  cursor: pointer;
+  color: #52b01c;
+}
+
+.tasks-modal {
+  color: #000;
+}
