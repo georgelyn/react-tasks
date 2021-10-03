@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiko:wght@600&display=swap');
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  background: #c6c6c9;
+  height: 45px;
+  margin-bottom: 1em;
+  padding: 1em 2em 0 0;
+  width: 100%;
+  font-family: 'Amiko', sans-serif;
+  color: #000;
+}
+
+.header p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-transform: uppercase;
+  font-size: 0.8em;
+}
+
+.header-logo {
+  margin-right: auto;
+  padding-left: 1em;
+  text-decoration: none;
+  color: #000;
+}
+
+.header-log-out-btn,
+.header-quick-task-btn {
+  border: 1px solid #000;
+  width: max-content;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.15);
+}
+
+.header-logo:hover {
+  cursor: pointer;
+  color: #4d5057;
+}
+
+.header-log-out-btn:hover {
+  cursor: pointer;
+  background: #f08d80;
+}
+
+.header-quick-task-btn:hover {
+  cursor: pointer;
+  background: #4d5057;
+}
+
+.header-quick-task-btn {
+  color: #fff;
+  background: #282c34;
+}
+
+.header-log-out-btn {
+  background: #ee6352;
+}

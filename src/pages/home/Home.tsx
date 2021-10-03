@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { logOut } from '../../contexts/AuthContext';
-import { Button, Container } from 'react-bootstrap';
 import Tasks from '../../components/tasks/Tasks';
-import TaskDetails from '../../components/tasks/TaskDetails';
 import { db } from '../../config/firebase';
 import { onSnapshot } from 'firebase/firestore';
 import { ITask } from '../../models/tasks.model';
+import Header from '../../components/layout/header/Header';
 
 export default function Home() {
   const [tasks, setTasks] = useState([] as ITask[]);
@@ -46,15 +45,8 @@ export default function Home() {
 
   return (
     <>
-      <Container className="d-flex justify-content-between align-items-center">
-        <h1>Home</h1>
-        <Button onClick={signOut}>Log Out</Button>
-      </Container>
-      {/* <Container className="text-center"> */}
+      <Header showQuickTask={true} />
       <Tasks tasks={tasks} />
-
-      {/* <Container className="text-center"> */}
-      <Button onClick={addTask}>New task</Button>
     </>
   );
 }
