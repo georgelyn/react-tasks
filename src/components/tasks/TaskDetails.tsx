@@ -1,42 +1,36 @@
 import { useState, useEffect } from 'react';
-import {
-  Button,
-  Container,
-  Form,
-  Col,
-  Row,
-  FloatingLabel,
-} from 'react-bootstrap';
+import { Button, Container, Form, Col, Row } from 'react-bootstrap';
 import './TaskDetails.css';
 import { ITask } from '../../models/tasks.model';
 import TasksDataService from '../../services';
 import { useHistory, useParams } from 'react-router-dom';
+import { formatDate } from '../../utils';
 
 interface IRouteParams {
   id: string;
 }
 
-// export default function TaskDetails(props: { show: boolean; task: ITask }) {
 export default function TaskDetails() {
   const [task, setTask] = useState({} as ITask);
   const [disabled, setDisabled] = useState(true);
+  const [text, setText] = useState('Create Task');
 
-  const [subject, setSubject] = useState('');
-  const [description, setDescription] = useState('');
   const [project, setProject] = useState('');
 
   const { id } = useParams<IRouteParams>();
   const history = useHistory();
 
   useEffect(() => {
-    getData();
+    // If it's an update of an existing task
+    if (id) {
+      getData();
+      setText('Update Task');
+    }
   }, []);
 
   const getData = async () => {
-    if (id) {
-      const t = await TasksDataService.getTask(id);
-      setTask(t);
-    }
+    const data = await TasksDataService.getTask(id);
+    setTask(data);
   };
 
   const handleSubmit = (event: any) => {
@@ -44,11 +38,13 @@ export default function TaskDetails() {
 
     try {
       if (id) {
+        task.subject = task.subject?.trim() ?? '';
+        task.description = task.description.trim();
         TasksDataService.update(task);
       } else {
         const newTask: ITask = {
-          subject: task.subject,
-          description: task.description,
+          subject: task.subject?.trim() ?? '',
+          description: task.description.trim(),
           completed: false,
           dateAdded: new Date(),
           dateCompleted: null,
@@ -63,13 +59,12 @@ export default function TaskDetails() {
   };
 
   const handleChange = (event: any) => {
-    setTask({ ...task, [event.target.id]: event.target.value });
+    let value = event.target.value;
+    if (event.target.id.includes('date')) {
+      value = new Date(event.target.value.toString());
+    }
 
-    // if (event.target.id === 'subject') {
-    //   setSubject(event.target.value);
-    // } else {
-    //   setDescription(event.target.value);
-    // }
+    setTask({ ...task, [event.target.id]: value });
   };
 
   return (
@@ -78,19 +73,30 @@ export default function TaskDetails() {
         <Form.Group
           as={Row}
           className="mb-3 d-flex justify-content-end"
-          controlId="formDate"
+          // controlId="formDate"
         >
           <Form.Label column sm="2" className="task-date">
             Date added:
           </Form.Label>
           <Col sm="2">
-            <Form.Control type="text" readOnly={disabled} />
+            <Form.Control
+              type="text"
+              readOnly={disabled}
+              value={formatDate(task?.dateAdded)}
+              id="dateAdded"
+            />
           </Col>
           <Form.Label column sm="2" className="task-date">
             Date completed:
           </Form.Label>
           <Col sm="2">
-            <Form.Control type="text" readOnly={disabled} />
+            <Form.Control
+              type="text"
+              readOnly={!task.completed}
+              value={formatDate(task?.dateCompleted!)}
+              onChange={handleChange}
+              id="dateCompleted"
+            />
           </Col>
         </Form.Group>
         <Form.Control
@@ -123,7 +129,7 @@ export default function TaskDetails() {
           <Button style={{ width: '200px' }}>New Project</Button>
         </Form.Group>
         <Button type="submit" className="mt-5 w-100">
-          Create task
+          {text}
         </Button>
       </Form>
     </Container>

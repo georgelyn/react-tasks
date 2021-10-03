@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Button, Card, Container, Row, Col, Modal } from 'react-bootstrap';
+import { Button, Container, Modal } from 'react-bootstrap';
 import TasksDataService from '../../services';
 import { ITask } from '../../models/tasks.model';
 import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { Redirect, Route, useHistory } from 'react-router-dom';
-import TaskDetails from './TaskDetails';
+import { useHistory } from 'react-router-dom';
+import { formatDate } from '../../utils';
 
 export default function Tasks(props: { tasks: ITask[] }) {
   const [modalOptions, setModalOptions] = useState({
@@ -29,12 +29,16 @@ export default function Tasks(props: { tasks: ITask[] }) {
 
   const handleChange = async (id: string) => {
     try {
-      // setTask(await TasksDataService.getTask(id));
-
       history.push(`/task/${id}`);
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const setCompletionState = (task: ITask) => {
+    task.dateCompleted = !task.completed ? new Date() : null;
+    task.completed = !task.completed;
+    TasksDataService.update(task);
   };
 
   const handleClose = () => {
@@ -62,12 +66,16 @@ export default function Tasks(props: { tasks: ITask[] }) {
           </Button>
         </Modal.Footer>
       </Modal>
-      {/* <TaskDetails show={showEdit} task={task} /> */}
       <Container className="tasks-container">
         <div className="grid-wrapper">
           {props.tasks.map((task) => (
             // <div className="task-item">
-            <div className="tasks-content flow" key={task.id}>
+            <div
+              className={`tasks-content flow ${
+                task.completed ? 'tasks-completed' : ''
+              }`}
+              key={task.id}
+            >
               <div className="tasks-icons">
                 <div
                   className="fa-icon-pencil"
@@ -82,11 +90,21 @@ export default function Tasks(props: { tasks: ITask[] }) {
                   <FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon>
                 </div>
               </div>
-
+              <div className="tasks-date">
+                <div className="tasks-date-added">
+                  <p>Added: {formatDate(task.dateAdded)}</p>
+                </div>
+                <div className="tasks-date-completed">
+                  <p>Completed: {formatDate(task.dateCompleted) ?? 'N/A'}</p>
+                </div>
+              </div>
               <div className="tasks-title">
                 <h3>{task.subject}</h3>
               </div>
-              <div className="tasks-desc">
+              <div
+                className="tasks-desc"
+                onClick={() => setCompletionState(task)}
+              >
                 <p>{task.description}</p>
               </div>
               {/* </div> */}

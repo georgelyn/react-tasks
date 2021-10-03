@@ -53,6 +53,7 @@ body {
   font-weight: 900;
   color: #ee6352;
   line-height: 0.8;
+  word-wrap: break-word;
 }
 
 .tasks-desc:hover {
@@ -77,4 +78,21 @@ body {
 
 .tasks-modal {
   color: #000;
+}
+
+.tasks-date {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.tasks-date p {
+  margin: 0;
+  font-size: 0.8em;
+  color: #4d5057;
+}
+
+.tasks-completed {
+  opacity: 60%;
 }

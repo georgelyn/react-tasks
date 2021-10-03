@@ -23,14 +23,7 @@ class TasksDataService {
       tasks.push(doc.data() as ITask);
     });
 
-    // console.log(tasks);
     return tasks;
-
-    // const tasks = (await db.tasks.orderBy('dateAdded', 'asc').get()).docs.map(
-    //   (t) => t.data() as Task
-    // );
-    // console.log(tasks);
-    // return tasks;
   }
 
   async getTask(id: string) {
