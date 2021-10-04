@@ -24,12 +24,6 @@ export default function Login() {
     } catch (error: any) {
       const key = firebaseError(error.message);
 
-      // if (key in firebaseErrorMap) {
-      //   setError(firebaseErrorMap[key]);
-      // } else {
-      //   setError(error.message);
-      // }
-
       if (firebaseErrorMap.has(key)) {
         setError(firebaseErrorMap.get(key));
       } else {

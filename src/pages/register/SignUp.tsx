@@ -21,7 +21,6 @@ export default function SignUp() {
     event.preventDefault();
     try {
       await register(email, password);
-      console.log('registration succesful');
       history.push('/login');
     } catch (error: any) {
       const key = firebaseError(error.message);

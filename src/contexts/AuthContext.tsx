@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect, ReactNode } from 'react';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -42,9 +42,9 @@ export const logOut = () => {
   return auth.signOut();
 };
 
-// export function useAuth() {
-//   return useContext(AuthContext);
-// };
+export const currentUserId = (): string => {
+  return auth.currentUser?.uid ?? '';
+};
 
 export const AuthProvider: React.FunctionComponent<IAuthContextProps> = ({
   children,

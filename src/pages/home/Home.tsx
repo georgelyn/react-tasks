@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { logOut } from '../../contexts/AuthContext';
-import Tasks from '../../components/tasks/Tasks';
+import Tasks from '../../components/task/Tasks';
 import { db } from '../../config/firebase';
 import { onSnapshot } from 'firebase/firestore';
-import { ITask } from '../../models/tasks.model';
+import { ITask } from '../../models/task.model';
 import Header from '../../components/layout/header/Header';
 
 export default function Home() {
@@ -19,13 +19,10 @@ export default function Home() {
         .forEach((task: ITask) => {
           taskCollection.push(task);
         });
-      console.log(taskCollection);
       setTasks(taskCollection);
     });
 
     // unsubscribe to the listener when unmounting
-    console.log(tasks);
-
     return () => unsubscribe();
   }, []);
 
@@ -45,7 +42,7 @@ export default function Home() {
 
   return (
     <>
-      <Header showQuickTask={true} />
+      <Header showAddTask={true} />
       <Tasks tasks={tasks} />
     </>
   );

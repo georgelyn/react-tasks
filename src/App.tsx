@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import PrivateRoute from './components/PrivateRoute';
-import TaskDetails from './components/tasks/TaskDetails';
+import TaskDetails from './pages/task/TaskDetails';
 import { AuthProvider } from './contexts/AuthContext';
 import Home from './pages/home/Home';
 import Login from './pages/login/Login';

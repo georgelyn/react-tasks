@@ -1,5 +1,5 @@
 import { db } from '../config/firebase';
-import { ITask } from '../models/tasks.model';
+import { ITask, ICategory } from '../models';
 import {
   doc,
   addDoc,
@@ -11,9 +11,9 @@ import {
 } from 'firebase/firestore';
 
 class TasksDataService {
-  async add(task: ITask) {
-    const newTask = await addDoc(db.tasks, task);
-    return await updateDoc(newTask, { id: newTask.id });
+  async addTask(task: ITask) {
+    const item = await addDoc(db.tasks, task);
+    return await updateDoc(item, { id: item.id });
   }
 
   async getTasks(): Promise<ITask[]> {
@@ -31,16 +31,35 @@ class TasksDataService {
     return task.data() as ITask;
   }
 
-  async delete(id: string) {
-    // return await deleteDoc(db.tasks), id);
+  async deleteTask(id: string) {
     return await deleteDoc(doc(db.tasks, id));
-
-    // const docRef = doc(db.tasks, id);
-    // await deleteDoc(docRef);
   }
 
-  async update(task: ITask) {
+  async updateTask(task: ITask) {
     return await setDoc(doc(db.tasks, task.id), task);
+  }
+
+  async getCategories(): Promise<ICategory[]> {
+    const categories: ICategory[] = [];
+    const categoriesSnapshot = await getDocs(db.categories);
+    categoriesSnapshot.forEach((doc) => {
+      categories.push(doc.data() as ICategory);
+    });
+
+    return categories;
+  }
+
+  async addCategory(category: ICategory) {
+    const item = await addDoc(db.categories, category);
+    return await updateDoc(item, { id: item.id });
+  }
+
+  async updateCategory(category: ICategory) {
+    return await setDoc(doc(db.categories, category.id), category);
+  }
+
+  async deleteCategory(id: string) {
+    return await deleteDoc(doc(db.categories, id));
   }
 }
 

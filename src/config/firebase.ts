@@ -19,5 +19,5 @@ export const auth = getAuth(app);
 const fs = getFirestore();
 export const db = {
   tasks: collection(fs, 'tasks'),
-  projects: collection(fs, 'projects'),
+  categories: collection(fs, 'categories'),
 };

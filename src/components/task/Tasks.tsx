@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Container, Modal } from 'react-bootstrap';
 import TasksDataService from '../../services';
-import { ITask } from '../../models/tasks.model';
+import { ITask } from '../../models/task.model';
 import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
@@ -18,16 +18,15 @@ export default function Tasks(props: { tasks: ITask[] }) {
   const history = useHistory();
 
   const handleDelete = () => {
-    console.log(modalOptions);
     try {
-      TasksDataService.delete(modalOptions.taskId);
+      TasksDataService.deleteTask(modalOptions.taskId);
       setModalOptions({ ...modalOptions, show: false });
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleChange = async (id: string) => {
+  const handleChange = (id: string) => {
     try {
       history.push(`/task/${id}`);
     } catch (error) {
@@ -38,7 +37,7 @@ export default function Tasks(props: { tasks: ITask[] }) {
   const setCompletionState = (task: ITask) => {
     task.dateCompleted = !task.completed ? new Date() : null;
     task.completed = !task.completed;
-    TasksDataService.update(task);
+    TasksDataService.updateTask(task);
   };
 
   const handleClose = () => {

@@ -5,5 +5,6 @@ export interface ITask {
   completed: boolean;
   dateAdded: Date | any;
   dateCompleted?: Date | null;
-  projectId: string | null;
+  categoryId: string | null;
+  userId: string;
 }

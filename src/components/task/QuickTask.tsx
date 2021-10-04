@@ -1,13 +1,15 @@
-import { Button, Modal, Form } from 'react-bootstrap';
+import { Alert, Button, Modal, Form } from 'react-bootstrap';
 import { useState } from 'react';
-import { ITask } from '../../models/tasks.model';
+import { ITask } from '../../models/task.model';
 import TasksDataService from '../../services';
+import { currentUserId } from '../../contexts/AuthContext';
 
 export default function QuickTask(props: {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [description, setDescription] = useState('');
+  const [error, setError] = useState('');
 
   const handleChange = (event: any) => {
     let value = event.target.value;
@@ -23,14 +25,17 @@ export default function QuickTask(props: {
         dateAdded: new Date(),
         dateCompleted: null,
         projectId: null,
+        userId: currentUserId(),
       };
       try {
-        TasksDataService.add(newTask);
+        TasksDataService.addTask(newTask);
+        props.setShowModal(false);
       } catch (error) {
         console.error(error);
       }
+    } else {
+      setError('The description cannot be empty.');
     }
-    props.setShowModal(false);
   };
 
   return (
@@ -42,6 +47,11 @@ export default function QuickTask(props: {
       <Modal.Header closeButton>
         <Modal.Title>Add new task</Modal.Title>
       </Modal.Header>
+      {error && (
+        <Alert variant="warning" onClick={() => setError('')} dismissible>
+          {error}
+        </Alert>
+      )}
       <Modal.Body>
         <Form>
           <Form.Control
