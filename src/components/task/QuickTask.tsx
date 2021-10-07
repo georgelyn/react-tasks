@@ -24,7 +24,7 @@ export default function QuickTask(props: {
         completed: false,
         dateAdded: new Date(),
         dateCompleted: null,
-        projectId: null,
+        categoryId: null,
         userId: currentUserId(),
       };
       try {

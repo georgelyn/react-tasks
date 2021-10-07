@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Button, Container, Form, Col, Row } from 'react-bootstrap';
-import './TaskDetails.css';
-import { ITask, ICategory } from '../../models';
-import TasksDataService from '../../services';
 import { useHistory, useParams } from 'react-router-dom';
-import { formatDate } from '../../utils';
-import Header from '../../components/layout/header/Header';
-import { currentUserId } from '../../contexts/AuthContext';
-import Category from '../../components/category/Category';
-import { db } from '../../config/firebase';
+import { Button, Container, Form, Col, Row } from 'react-bootstrap';
 import { onSnapshot } from 'firebase/firestore';
+import { db } from '../../config/firebase';
+import Header from '../../components/layout/header/Header';
+import Category from '../../components/category/Category';
+import { ITask, ICategory, IQueryFields } from '../../models';
+import TasksDataService from '../../services';
+import { currentUserId } from '../../contexts/AuthContext';
+import { formatDate } from '../../utils';
+import './TaskDetails.css';
 
 interface IRouteParams {
   id: string;
@@ -36,7 +36,12 @@ export default function TaskDetails() {
       setText('Update Task');
     }
 
-    const unsubscribe = onSnapshot(db.categories, (snapshot) => {
+    const filter: IQueryFields = {
+      category: { field: 'userId', value: `${currentUserId()}` },
+    };
+    const query = TasksDataService.getFilteredQuery(db.categories, filter);
+
+    const unsubscribe = onSnapshot(query, (snapshot) => {
       const categoriesCollection = [] as ICategory[];
       snapshot.docs
         .map((c: any) => c.data() as ICategory)
@@ -44,18 +49,6 @@ export default function TaskDetails() {
           categoriesCollection.push(category);
         });
       setCategories(categoriesCollection);
-
-      // if (state.category.id && state.category.id !== '') {
-      //   setState({
-      //     ...state,
-      //     category: {
-      //       ...state.category,
-      //       name:
-      //         categoriesCollection.find((c) => c.id === state.task.categoryId)
-      //           ?.name ?? '',
-      //     },
-      //   });
-      // }
     });
 
     // unsubscribe to the listener when unmounting
@@ -143,7 +136,7 @@ export default function TaskDetails() {
               <Form.Control
                 type="text"
                 readOnly={disabled}
-                value={formatDate(state.task?.dateAdded)}
+                value={formatDate(state.task?.dateAdded) ?? ''}
                 id="dateAdded"
               />
             </Col>
@@ -154,7 +147,7 @@ export default function TaskDetails() {
               <Form.Control
                 type="text"
                 readOnly={!state.task.completed}
-                value={formatDate(state.task?.dateCompleted!)}
+                value={formatDate(state.task?.dateCompleted!) ?? ''}
                 onChange={handleChange}
                 id="dateCompleted"
               />
@@ -167,7 +160,7 @@ export default function TaskDetails() {
             placeholder="Subject"
             onChange={handleChange}
             id="subject"
-            value={state.task?.subject}
+            value={state.task?.subject ?? ''}
           />
           <br />
           <Form.Control
@@ -177,11 +170,10 @@ export default function TaskDetails() {
             onChange={handleChange}
             id="description"
             required
-            value={state.task?.description}
+            value={state.task?.description ?? ''}
           />
           <br />
-          <Form.Group className="d-flex">
-            {/* <Form.Label>Project</Form.Label> */}
+          <Container className="task-cat-btn">
             <Form.Select
               size="sm"
               className="task-select-category"
@@ -195,16 +187,9 @@ export default function TaskDetails() {
                 </option>
               ))}
             </Form.Select>
-            <Button
-              style={{ width: '200px' }}
-              onClick={() => setShowModal(true)}
-            >
-              New Category
-            </Button>
-          </Form.Group>
-          <Button type="submit" className="mt-5 w-100">
-            {text}
-          </Button>
+            <Button onClick={() => setShowModal(true)}>New Category</Button>
+            <Button type="submit">{text}</Button>
+          </Container>
         </Form>
       </Container>
     </>

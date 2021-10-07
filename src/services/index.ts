@@ -1,5 +1,5 @@
 import { db } from '../config/firebase';
-import { ITask, ICategory } from '../models';
+import { ITask, ICategory, IQueryFields } from '../models';
 import {
   doc,
   addDoc,
@@ -8,6 +8,11 @@ import {
   getDoc,
   deleteDoc,
   setDoc,
+  query,
+  where,
+  DocumentData,
+  CollectionReference,
+  QueryConstraint,
 } from 'firebase/firestore';
 
 class TasksDataService {
@@ -39,9 +44,13 @@ class TasksDataService {
     return await setDoc(doc(db.tasks, task.id), task);
   }
 
-  async getCategories(): Promise<ICategory[]> {
-    const categories: ICategory[] = [];
-    const categoriesSnapshot = await getDocs(db.categories);
+  async getCategories(userId: string): Promise<ICategory[]> {
+    let categories: ICategory[] = [];
+    const query = this.getFilteredQuery(db.categories, {
+      user: { field: 'userId', value: `${userId}` },
+    });
+
+    const categoriesSnapshot = await getDocs(query);
     categoriesSnapshot.forEach((doc) => {
       categories.push(doc.data() as ICategory);
     });
@@ -61,6 +70,44 @@ class TasksDataService {
   async deleteCategory(id: string) {
     return await deleteDoc(doc(db.categories, id));
   }
+
+  getFilteredQuery(
+    collection: CollectionReference<DocumentData>,
+    queryFields: IQueryFields
+  ) {
+    let filteredQuery: QueryConstraint[] = [];
+
+    if (Object.keys(queryFields).length < 1) {
+      return collection;
+    }
+
+    for (const [key, { field, value }] of Object.entries(queryFields)) {
+      if ((field && value) || (field && typeof value === 'boolean')) {
+        filteredQuery.push(where(field, '==', value));
+      }
+    }
+
+    return query(collection, ...filteredQuery);
+  }
+
+  // getSimpleQuery(
+  //   collection: CollectionReference<DocumentData>,
+  //   queryFields: { field: string; value: string }[]
+  // ) {
+  //   let filteredQuery: QueryConstraint[] = [];
+
+  //   if (queryFields.length == 0) {
+  //     return collection;
+  //   }
+
+  //   for (let i = 0; i < queryFields.length; i++) {
+  //     filteredQuery.push(
+  //       where(`${queryFields[i].field}`, '==', `${queryFields[i].value}`)
+  //     );
+  //   }
+
+  //   return query(collection, ...filteredQuery);
+  // }
 }
 
 export default new TasksDataService();

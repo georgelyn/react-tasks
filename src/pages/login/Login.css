@@ -16,3 +16,32 @@
   margin-bottom: 0;
   padding-top: 15px;
 }
+
+.login-form button:disabled {
+  background: hsla(0, 0%, 100%, 0.2);
+  border: none;
+}
+
+.login-form button:not(.btn-close) {
+  background: #8d8e8fad;
+  border: none;
+}
+
+.login-form button:hover:not(.btn-close) {
+  background: #54585cad;
+}
+
+.login-form button:focus:not(.btn-close) {
+  border: none;
+  background: #54585cad;
+  box-shadow: none;
+}
+
+.login-form a {
+  text-decoration: none;
+  color: #cdd2eca6;
+}
+
+.login-form a:hover {
+  color: #808185;
+}

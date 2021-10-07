@@ -6,22 +6,21 @@
   height: 100vh;
   overflow: auto; */
   padding-bottom: 20px;
-}
-
-/* temporal - hasta tener header */
-body {
-  overflow: auto;
+  grid-area: tasks;
 }
 
 .grid-wrapper {
   --gap: 1em;
   --columns: 4;
-  max-width: 60rem;
-  margin: 0 auto;
-  display: column;
+  /* max-width: 60rem; */
+  /* margin: 0 auto; */
   columns: var(--columns);
   gap: var(--gap);
   color: #000;
+  /* column-count: 4; */
+  /* column-width: 100px; */
+  /* margin: 1.5em auto; */
+  padding: 30px;
 }
 
 .grid-wrapper > * {
@@ -38,6 +37,8 @@ body {
   /* box-shadow: 0 0 3em rgba(0, 0, 0, 0.15); */
   background: white;
   border-radius: 5px;
+  display: inline-block;
+  width: 100%;
 }
 
 .tasks-content p {
@@ -102,4 +103,24 @@ body {
 
 .tasks-completed {
   opacity: 60%;
+}
+
+@media only screen and (max-width: 1250px) and (min-width: 1023px) {
+  .grid-wrapper {
+    column-count: 3;
+  }
+}
+
+/* Masonry on medium-sized screens */
+@media only screen and (max-width: 1023px) and (min-width: 768px) {
+  .grid-wrapper {
+    column-count: 2;
+  }
+}
+
+/* Masonry on small screens */
+@media only screen and (max-width: 767px) and (min-width: 540px) {
+  .grid-wrapper {
+    column-count: 1;
+  }
 }
