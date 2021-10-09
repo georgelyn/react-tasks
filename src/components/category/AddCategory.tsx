@@ -1,33 +1,33 @@
+import { useState, useRef } from 'react';
 import { Alert, Button, Modal, Form } from 'react-bootstrap';
-import { useState } from 'react';
 import { ICategory } from '../../models/category.model';
 import TasksDataService from '../../services';
 import { currentUserId } from '../../contexts/AuthContext';
 
-export default function Category(props: {
+export default function AddCategory(props: {
   showModal: boolean;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  handleCategoryModal: (category?: { name: string; id: string }) => void;
 }) {
-  const [state, setState] = useState({ name: '', description: '' });
   const [error, setError] = useState('');
 
-  const handleChange = (event: any) => {
-    setState({ ...state, [event.target.id]: event.target.value });
-  };
+  const nameRef = useRef<HTMLTextAreaElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleSubmit = () => {
-    if (state.name.trim() !== '') {
+  const handleSubmit = async () => {
+    if (nameRef.current?.value.trim()) {
       const category: ICategory = {
-        name: state.name.trim(),
-        description: state.description.trim() ?? '',
+        name: nameRef.current?.value.trim(),
+        description: descriptionRef.current?.value.trim() ?? '',
         dateAdded: new Date(),
         userId: currentUserId(),
       };
       try {
-        TasksDataService.addCategory(category);
-        props.setShowModal(false);
+        const id = await TasksDataService.addCategory(category);
+        props.handleCategoryModal({ name: category.name, id: id });
       } catch (error) {
         console.error(error);
+      } finally {
+        setError('');
       }
     } else {
       setError('The name cannot be empty.');
@@ -38,7 +38,10 @@ export default function Category(props: {
     <>
       <Modal
         show={props.showModal}
-        onHide={() => props.setShowModal(false)}
+        onHide={() => {
+          props.handleCategoryModal();
+          setError('');
+        }}
         className="tasks-modal"
       >
         <Modal.Header closeButton>
@@ -55,15 +58,15 @@ export default function Category(props: {
               as="textarea"
               style={{ height: '50px' }}
               placeholder="Name"
-              onChange={handleChange}
               id="name"
+              ref={nameRef}
             />
             <Form.Control
               as="textarea"
               style={{ height: '100px' }}
               placeholder="Description"
-              onChange={handleChange}
               id="description"
+              ref={descriptionRef}
             />
           </Form>
         </Modal.Body>

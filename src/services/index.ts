@@ -10,6 +10,7 @@ import {
   setDoc,
   query,
   where,
+  orderBy,
   DocumentData,
   CollectionReference,
   QueryConstraint,
@@ -60,7 +61,8 @@ class TasksDataService {
 
   async addCategory(category: ICategory) {
     const item = await addDoc(db.categories, category);
-    return await updateDoc(item, { id: item.id });
+    updateDoc(item, { id: item.id });
+    return item.id;
   }
 
   async updateCategory(category: ICategory) {
@@ -87,7 +89,10 @@ class TasksDataService {
       }
     }
 
-    return query(collection, ...filteredQuery);
+    return query(
+      collection,
+      ...filteredQuery /*, orderBy('dateAdded', 'asc')*/
+    );
   }
 
   // getSimpleQuery(

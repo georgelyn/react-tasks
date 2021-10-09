@@ -1,7 +1,7 @@
-import { ICategory } from '../models';
-import './Sidebar.css';
+import { ICategory } from '../../models';
+import './CategoryList.css';
 
-export default function Sidebar(props: {
+export default function CategoryList(props: {
   categories: ICategory[];
   filterTasksByCategory: any;
   selectedCategory: string;

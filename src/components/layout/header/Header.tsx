@@ -1,14 +1,15 @@
-import './Header.css';
-import { logOut } from '../../../contexts/AuthContext';
+import { useState } from 'react';
+import { NavLink, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlusSquare,
   faHome,
   faSignOutAlt,
+  faCat,
 } from '@fortawesome/free-solid-svg-icons';
-import { NavLink, useHistory } from 'react-router-dom';
 import QuickTask from '../../task/QuickTask';
-import { useState } from 'react';
+import { logOut } from '../../../contexts/AuthContext';
+import './Header.css';
 
 const signOut = () => {
   logOut()
@@ -32,6 +33,14 @@ export default function Header(props: { showAddTask: boolean }) {
     }
   };
 
+  const handleRedirect = (event: any) => {
+    try {
+      history.push(`/${event.target.id}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="header">
       <QuickTask showModal={showModal} setShowModal={setShowModal} />
@@ -42,7 +51,11 @@ export default function Header(props: { showAddTask: boolean }) {
       </NavLink>
       {props.showAddTask && (
         <>
-          <p className="header-quick-task-btn" onClick={handleAddTask}>
+          <p
+            id="task"
+            className="header-quick-task-btn"
+            onClick={handleAddTask}
+          >
             <FontAwesomeIcon icon={faPlusSquare}></FontAwesomeIcon>
             Add task
           </p>
@@ -52,6 +65,14 @@ export default function Header(props: { showAddTask: boolean }) {
           >
             <FontAwesomeIcon icon={faPlusSquare}></FontAwesomeIcon>
             Quick task
+          </p>
+          <p
+            id="categories"
+            className="header-quick-task-btn"
+            onClick={handleRedirect}
+          >
+            <FontAwesomeIcon icon={faCat}></FontAwesomeIcon>
+            Categories
           </p>
         </>
       )}

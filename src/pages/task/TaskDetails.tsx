@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Button, Container, Form, Col, Row } from 'react-bootstrap';
 import { onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import Header from '../../components/layout/header/Header';
-import Category from '../../components/category/Category';
+import AddCategory from '../../components/category/AddCategory';
 import { ITask, ICategory, IQueryFields } from '../../models';
 import TasksDataService from '../../services';
 import { currentUserId } from '../../contexts/AuthContext';
@@ -28,6 +28,8 @@ export default function TaskDetails() {
 
   const { id } = useParams<IRouteParams>();
   const history = useHistory();
+
+  let categoryRef = useRef({ name: '', id: '' });
 
   useEffect(() => {
     // If it's an update of an existing task
@@ -66,6 +68,10 @@ export default function TaskDetails() {
   };
 
   const setSelectValue = () => {
+    if (categoryRef.current.id) {
+      return categoryRef.current.name;
+    }
+
     if (state.category.name) {
       return state.category.name;
     }
@@ -76,11 +82,15 @@ export default function TaskDetails() {
     event.preventDefault();
 
     try {
+      const categoryId =
+        categoryRef.current.id !== ''
+          ? categoryRef.current.id
+          : state.category.id;
       if (id) {
         let task: ITask = { ...state.task };
         task.subject = state.task.subject?.trim() ?? '';
         task.description = state.task.description.trim();
-        task.categoryId = state.category.id;
+        task.categoryId = categoryId;
         TasksDataService.updateTask(task);
       } else {
         const newTask: ITask = {
@@ -89,7 +99,7 @@ export default function TaskDetails() {
           completed: false,
           dateAdded: new Date(),
           dateCompleted: null,
-          categoryId: state.category.id,
+          categoryId: categoryId,
           userId: currentUserId(),
         };
         TasksDataService.addTask(newTask);
@@ -116,19 +126,28 @@ export default function TaskDetails() {
       ...state,
       category: { ...state.category, name: event.target.value, id: categoryId },
     });
+
+    categoryRef.current = { name: '', id: '' };
+  };
+
+  const handleCategoryModal = (category?: { name: string; id: string }) => {
+    if (category) {
+      categoryRef.current = { name: category.name, id: category.id };
+    }
+
+    setShowModal(false);
   };
 
   return (
     <>
       <Header showAddTask={false} />
-      <Category showModal={showModal} setShowModal={setShowModal} />
-      <Container className="mt-5" style={{ width: '60%' }}>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group
-            as={Row}
-            className="mb-3 d-flex justify-content-end"
-            // controlId="formDate"
-          >
+      <AddCategory
+        showModal={showModal}
+        handleCategoryModal={handleCategoryModal}
+      />
+      <Container className="mt-5" style={{ width: '100%' }}>
+        <Form className="task-form-container" onSubmit={handleSubmit}>
+          <Form.Group as={Row} className="mb-3 d-flex justify-content-end">
             <Form.Label column sm="2" className="task-date">
               Date added:
             </Form.Label>
@@ -165,7 +184,7 @@ export default function TaskDetails() {
           <br />
           <Form.Control
             as="textarea"
-            style={{ height: '100px' }}
+            style={{ height: '150px' }}
             placeholder="Description"
             onChange={handleChange}
             id="description"
@@ -181,8 +200,8 @@ export default function TaskDetails() {
               value={setSelectValue()}
             >
               <option>Choose a category</option>
-              {categories.map((category) => (
-                <option id={category.id} key={category.id}>
+              {categories.map((category, index) => (
+                <option id={category.id} key={index}>
                   {category.name}
                 </option>
               ))}

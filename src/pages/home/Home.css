@@ -2,6 +2,8 @@
   display: grid;
   grid-template-areas: 'filter-btn filter-btn filter-btn' 'sidebar tasks tasks';
   grid-template-columns: 250px auto;
+  overflow: auto;
+  padding-top: 1em;
 }
 
 .home-filter-btn {
@@ -10,7 +12,7 @@
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  margin-right: 50px;
+  margin-right: 30px;
 }
 
 .home-filter-btn button {

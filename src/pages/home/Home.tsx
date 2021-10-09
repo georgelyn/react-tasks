@@ -3,7 +3,7 @@ import { onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import Tasks from '../../components/task/Tasks';
 import Header from '../../components/layout/header/Header';
-import Sidebar from '../../components/Sidebar';
+import CategoryList from '../../components/category/CategoryList';
 import { ITask, ICategory, IQueryFields } from '../../models';
 import TasksDataService from '../../services';
 import { currentUserId } from '../../contexts/AuthContext';
@@ -41,12 +41,13 @@ export default function Home() {
   };
 
   const filterTasksByCompletionState = (event: any) => {
-    console.log('filterTasksByCompletionState');
+    // console.log('filterTasksByCompletionState');
     const state = event.target.id;
 
     if (stateFilter.current === state || state === 'all') {
       stateFilter.current = '';
-      setFilter({ ...filter, state: {} });
+      selectedCategory.current = '';
+      setFilter({ ...filter, category: {}, state: {} });
       return;
     }
 
@@ -115,7 +116,7 @@ export default function Home() {
             Pending tasks
           </button>
         </div>
-        <Sidebar
+        <CategoryList
           categories={categories}
           filterTasksByCategory={filterTasksByCategory}
           selectedCategory={selectedCategory.current}
