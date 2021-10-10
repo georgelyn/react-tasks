@@ -7,8 +7,8 @@ import {
   faSignOutAlt,
   faCat,
 } from '@fortawesome/free-solid-svg-icons';
-import QuickTask from '../../task/QuickTask';
-import { logOut } from '../../../contexts/AuthContext';
+import QuickTask from '../task/QuickTask';
+import { logOut } from '../../contexts/AuthContext';
 import './Header.css';
 
 const signOut = () => {

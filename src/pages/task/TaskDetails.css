@@ -44,3 +44,7 @@
   background: #54585cad;
   box-shadow: none;
 }
+
+.task-cat-btn button:disabled {
+  background: hsla(0, 0%, 100%, 0.37);
+}

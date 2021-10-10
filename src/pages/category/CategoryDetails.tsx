@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { Button, Container, Form, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import Header from '../../components/layout/header/Header';
+import Header from '../../components/layout/Header';
 import AddCategory from '../../components/category/AddCategory';
+import Loader from '../../components/layout/Loader';
 import { ICategory } from '../../models';
 import { currentUserId } from '../../contexts/AuthContext';
 import TasksDataService from '../../services';
@@ -21,24 +22,34 @@ export default function CategoryDetails() {
     showAddCategoryModal: false,
   });
 
+  const loaderRef = useRef(true);
+
   useEffect(() => {
+    showLoader(true);
     TasksDataService.getCategories(currentUserId()).then((data) => {
       setCategories(data);
     });
+    showLoader(false);
   }, [state.updated]);
 
+  const showLoader = (show: boolean) => {
+    loaderRef.current = show;
+  };
+
   const fetchCategory = (id: string) => {
+    showLoader(true);
     setState({
       ...state,
       category: categories.find((c) => c.id === id) as ICategory,
       enabled: true,
     });
+    showLoader(false);
   };
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-
     try {
+      showLoader(true);
       TasksDataService.updateCategory(state.category).then(() => {
         setState({
           ...state,
@@ -51,18 +62,23 @@ export default function CategoryDetails() {
       });
     } catch (error) {
       console.error(error);
+    } finally {
+      showLoader(false);
     }
   };
 
   const handleChange = (event: any) => {
+    showLoader(true);
     setState({
       ...state,
       category: { ...state.category, [event.target.id]: event.target.value },
     });
+    showLoader(false);
   };
 
   const handleDelete = () => {
     if (state.category.id) {
+      showLoader(true);
       TasksDataService.deleteCategory(state.category.id).then(() => {
         setState({
           ...state,
@@ -73,6 +89,7 @@ export default function CategoryDetails() {
           modalMessage: 'The category has been successfully deleted.',
         });
       });
+      showLoader(false);
     }
   };
 
@@ -81,6 +98,7 @@ export default function CategoryDetails() {
   };
 
   const handleCategoryModal = (category?: { name: string; id: string }) => {
+    showLoader(true);
     if (category?.id) {
       setState({
         ...state,
@@ -94,11 +112,13 @@ export default function CategoryDetails() {
         showAddCategoryModal: false,
       });
     }
+    showLoader(false);
   };
 
   return (
     <>
       <Header showAddTask={false} />
+      <Loader show={loaderRef.current} />
       <AddCategory
         showModal={state.showAddCategoryModal}
         handleCategoryModal={handleCategoryModal}
@@ -187,7 +207,11 @@ export default function CategoryDetails() {
               <Button disabled={!state.enabled} type="submit">
                 Update
               </Button>
-              <Button disabled={!state.enabled} onClick={handleDelete}>
+              <Button
+                className="category-btn-delete"
+                disabled={!state.enabled}
+                onClick={handleDelete}
+              >
                 Delete
               </Button>
             </Container>

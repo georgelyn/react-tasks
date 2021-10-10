@@ -6,20 +6,25 @@
   align-items: center;
   gap: 10px;
   background: #c6c6c9;
-  height: 45px;
+  min-height: 40px;
   /* margin-bottom: 1em; */
-  padding: 1em 2em 0 0;
+  /* padding: 1em 2em 0 0; */
   width: 100%;
   font-family: 'Amiko', sans-serif;
   color: #000;
 }
 
 .header p {
-  display: flex;
+  /* display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 5px; */
   text-transform: uppercase;
   font-size: 0.8em;
+  margin: 0;
+}
+
+.header svg {
+  margin-right: 5px;
 }
 
 .header-logo {
@@ -61,4 +66,5 @@
 
 .header-log-out-btn {
   background: #ee6352;
+  margin-right: 15px !important;
 }

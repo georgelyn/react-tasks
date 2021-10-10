@@ -29,7 +29,7 @@ export const formatDate = (timestamp: any) => {
       return firestoreTimestamp.toDate().toISOString().slice(0, 10);
     }
     try {
-      return timestamp.toISOString().slice(0, 10); // yyyy-MM-dd
+      return timestamp; //.toISOString().slice(0, 10); // yyyy-MM-dd
     } catch (error) {}
   }
 };

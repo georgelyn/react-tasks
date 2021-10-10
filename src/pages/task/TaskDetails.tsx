@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { Button, Container, Form, Col, Row } from 'react-bootstrap';
-import { onSnapshot } from 'firebase/firestore';
-import { db } from '../../config/firebase';
-import Header from '../../components/layout/header/Header';
+import { Button, Container, Form, Col, Row, Alert } from 'react-bootstrap';
+import Header from '../../components/layout/Header';
 import AddCategory from '../../components/category/AddCategory';
-import { ITask, ICategory, IQueryFields } from '../../models';
+import Loader from '../../components/layout/Loader';
+import { ITask, ICategory } from '../../models';
 import TasksDataService from '../../services';
 import { currentUserId } from '../../contexts/AuthContext';
 import { formatDate } from '../../utils';
@@ -26,36 +25,28 @@ export default function TaskDetails() {
     category: { name: '', id: '' },
   });
 
+  const [error, setError] = useState('');
+  const [loader, setLoader] = useState(false);
+
   const { id } = useParams<IRouteParams>();
   const history = useHistory();
 
   let categoryRef = useRef({ name: '', id: '' });
 
   useEffect(() => {
+    setLoader(true);
     // If it's an update of an existing task
     if (id) {
       getData();
       setText('Update Task');
     }
 
-    const filter: IQueryFields = {
-      category: { field: 'userId', value: `${currentUserId()}` },
-    };
-    const query = TasksDataService.getFilteredQuery(db.categories, filter);
-
-    const unsubscribe = onSnapshot(query, (snapshot) => {
-      const categoriesCollection = [] as ICategory[];
-      snapshot.docs
-        .map((c: any) => c.data() as ICategory)
-        .forEach((category: ICategory) => {
-          categoriesCollection.push(category);
-        });
-      setCategories(categoriesCollection);
-    });
-
-    // unsubscribe to the listener when unmounting
-    return () => unsubscribe();
-  }, []);
+    TasksDataService.getCategories(currentUserId())
+      .then((data) => {
+        setCategories(data);
+      })
+      .then(() => setLoader(false));
+  }, [categoryRef.current.id]);
 
   const getData = async () => {
     const data = await TasksDataService.getTask(id);
@@ -65,6 +56,7 @@ export default function TaskDetails() {
       task: data,
       category: { ...state.category, id: data.categoryId ?? '' },
     });
+    setLoader(false);
   };
 
   const setSelectValue = () => {
@@ -81,7 +73,12 @@ export default function TaskDetails() {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
+    if (error) {
+      return;
+    }
+
     try {
+      setLoader(true);
       const categoryId =
         categoryRef.current.id !== ''
           ? categoryRef.current.id
@@ -107,14 +104,16 @@ export default function TaskDetails() {
       history.push('/');
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoader(false);
     }
   };
 
   const handleChange = (event: any) => {
     let value = event.target.value;
-    if (event.target.id.includes('date')) {
-      value = new Date(event.target.value.toString());
-    }
+    // if (event.target.id.includes('date')) {
+    //   // value = new Date(event.target.value.toString());
+    // }
 
     setState({ ...state, task: { ...state.task, [event.target.id]: value } });
   };
@@ -138,15 +137,38 @@ export default function TaskDetails() {
     setShowModal(false);
   };
 
+  const validateDate = () => {
+    let date = state.task.dateCompleted?.toString() ?? '';
+    const checkDate = Date.parse(date);
+    if (isNaN(checkDate) && date !== '') {
+      setError(
+        'The date is not in a correct format. Please change it or leave it empty.'
+      );
+    } else {
+      setError('');
+      if (date) {
+        setState({
+          ...state,
+          task: {
+            ...state.task,
+            dateCompleted: new Date(date),
+          },
+        });
+      }
+    }
+  };
+
   return (
     <>
       <Header showAddTask={false} />
+      <Loader show={loader} />
       <AddCategory
         showModal={showModal}
         handleCategoryModal={handleCategoryModal}
       />
       <Container className="mt-5" style={{ width: '100%' }}>
         <Form className="task-form-container" onSubmit={handleSubmit}>
+          {error && <Alert variant="warning">{error}</Alert>}
           <Form.Group as={Row} className="mb-3 d-flex justify-content-end">
             <Form.Label column sm="2" className="task-date">
               Date added:
@@ -166,9 +188,10 @@ export default function TaskDetails() {
               <Form.Control
                 type="text"
                 readOnly={!state.task.completed}
-                value={formatDate(state.task?.dateCompleted!) ?? ''}
+                value={formatDate(state.task.dateCompleted) ?? ''}
                 onChange={handleChange}
                 id="dateCompleted"
+                onBlur={validateDate}
               />
             </Col>
           </Form.Group>
@@ -207,7 +230,9 @@ export default function TaskDetails() {
               ))}
             </Form.Select>
             <Button onClick={() => setShowModal(true)}>New Category</Button>
-            <Button type="submit">{text}</Button>
+            <Button type="submit" disabled={error ? true : false}>
+              {text}
+            </Button>
           </Container>
         </Form>
       </Container>

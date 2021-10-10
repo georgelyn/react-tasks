@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import Tasks from '../../components/task/Tasks';
-import Header from '../../components/layout/header/Header';
+import Header from '../../components/layout/Header';
 import CategoryList from '../../components/category/CategoryList';
+import Loader from '../../components/layout/Loader';
 import { ITask, ICategory, IQueryFields } from '../../models';
 import TasksDataService from '../../services';
 import { currentUserId } from '../../contexts/AuthContext';
@@ -18,11 +19,40 @@ export default function Home() {
 
   const selectedCategory = useRef('');
   const stateFilter = useRef('');
+  const loaderRef = useRef(true);
+
+  useEffect(() => {
+    showLoader(true);
+    const query = TasksDataService.getFilteredQuery(db.tasks, filter);
+    const unsubscribe = onSnapshot(query, (snapshot) => {
+      const taskCollection = [] as ITask[];
+      snapshot.docs
+        .map((t: any) => t.data() as ITask)
+        .forEach((task: ITask) => {
+          taskCollection.push(task);
+        });
+      setTasks(taskCollection);
+    });
+
+    TasksDataService.getCategories(currentUserId()).then((data) => {
+      setCategories(data);
+    });
+
+    showLoader(false);
+
+    // unsubscribe to the listener when unmounting
+    return () => unsubscribe();
+  }, [filter]);
+
+  const showLoader = (show: boolean) => {
+    loaderRef.current = show;
+  };
 
   const filterTasksByCategory = (filterQuery: {
     field: string;
     value: string;
   }) => {
+    showLoader(true);
     if (filterQuery.value !== selectedCategory.current) {
       setFilter({
         ...filter,
@@ -41,6 +71,7 @@ export default function Home() {
   };
 
   const filterTasksByCompletionState = (event: any) => {
+    showLoader(true);
     // console.log('filterTasksByCompletionState');
     const state = event.target.id;
 
@@ -59,29 +90,10 @@ export default function Home() {
     });
   };
 
-  useEffect(() => {
-    const query = TasksDataService.getFilteredQuery(db.tasks, filter);
-    const unsubscribe = onSnapshot(query, (snapshot) => {
-      const taskCollection = [] as ITask[];
-      snapshot.docs
-        .map((t: any) => t.data() as ITask)
-        .forEach((task: ITask) => {
-          taskCollection.push(task);
-        });
-      setTasks(taskCollection);
-    });
-
-    TasksDataService.getCategories(currentUserId()).then((data) => {
-      setCategories(data);
-    });
-
-    // unsubscribe to the listener when unmounting
-    return () => unsubscribe();
-  }, [filter]);
-
   return (
     <>
       <Header showAddTask={true} />
+      <Loader show={loaderRef.current} />
       <div className="home-container">
         <div className="home-filter-btn">
           <button
