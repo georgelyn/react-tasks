@@ -22,6 +22,7 @@
 .task-cat-btn select {
   width: 70%;
   margin-right: 10px;
+  font-size: 1em;
 }
 
 .task-cat-btn button {

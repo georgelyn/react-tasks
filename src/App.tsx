@@ -13,17 +13,19 @@ function App() {
     <AuthProvider>
       <Router>
         <Switch>
-          <div className="App">
-            <PrivateRoute exact path="/" component={Home} />
-            <Route path="/signup" component={SignUp} />
-            <Route path="/login" component={Login} />
-            <PrivateRoute exact path="/task/:id?" component={TaskDetails} />
-            <PrivateRoute
-              exact
-              path="/categories"
-              component={CategoryDetails}
-            />
-          </div>
+          <>
+            <div className="App">
+              <PrivateRoute exact path="/" component={Home} />
+              <Route path="/signup" component={SignUp} />
+              <Route path="/login" component={Login} />
+              <PrivateRoute exact path="/task/:id?" component={TaskDetails} />
+              <PrivateRoute
+                exact
+                path="/categories"
+                component={CategoryDetails}
+              />
+            </div>
+          </>
         </Switch>
       </Router>
     </AuthProvider>

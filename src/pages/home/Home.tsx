@@ -31,10 +31,12 @@ export default function Home() {
         .forEach((task: ITask) => {
           taskCollection.push(task);
         });
+      taskCollection.sort((a, b) => a.dateAdded - b.dateAdded);
       setTasks(taskCollection);
     });
 
     TasksDataService.getCategories(currentUserId()).then((data) => {
+      data.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
       setCategories(data);
     });
 

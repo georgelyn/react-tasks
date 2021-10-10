@@ -53,7 +53,7 @@ export default function SignUp() {
     <>
       <Loader show={showLoader} />
       <Container className="login d-flex flex-column align-items-center justify-content-center">
-        <h1 className="text-center mb-5">Geo-Tasks</h1>
+        <h1 className="text-center mb-5">Tasks</h1>
         <Form className="login-form " onSubmit={handleSubmit}>
           {error && (
             <Alert variant="warning" onClick={() => setError('')} dismissible>

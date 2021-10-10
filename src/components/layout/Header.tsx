@@ -46,7 +46,7 @@ export default function Header(props: { showAddTask: boolean }) {
       <QuickTask showModal={showModal} setShowModal={setShowModal} />
       <NavLink to="/" className="header-logo">
         <p>
-          <FontAwesomeIcon icon={faHome}></FontAwesomeIcon>Geo-Tasks
+          <FontAwesomeIcon icon={faHome}></FontAwesomeIcon>Tasks
         </p>
       </NavLink>
       {props.showAddTask && (
