@@ -167,11 +167,14 @@ export default function TaskDetails() {
         showModal={showModal}
         handleCategoryModal={handleCategoryModal}
       />
-      <Container className="mt-5" style={{ width: '100%' }}>
-        <Form className="task-form-container" onSubmit={handleSubmit}>
+      <Container className="pt-5 task-form-container" style={{ width: '100%' }}>
+        <Form className="task-form" onSubmit={handleSubmit}>
           {error && <Alert variant="warning">{error}</Alert>}
-          <Form.Group as={Row} className="mb-3 d-flex justify-content-end">
-            <Form.Label column sm="2" className="task-date">
+          <Form.Group
+            as={Row}
+            className="mb-3 d-flex justify-content-end task-date"
+          >
+            <Form.Label column sm="2" className="task-date-label">
               Date added:
             </Form.Label>
             <Col sm="2">
@@ -182,7 +185,7 @@ export default function TaskDetails() {
                 id="dateAdded"
               />
             </Col>
-            <Form.Label column sm="2" className="task-date">
+            <Form.Label column sm="2" className="task-date-label">
               Date completed:
             </Form.Label>
             <Col sm="2">

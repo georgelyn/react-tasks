@@ -1,12 +1,13 @@
-.task-date {
+.task-date-label {
   width: max-content;
 }
 
-/* .task-select-category {
-  margin-right: 10px;
-} */
-
 .task-form-container {
+  height: 100vh;
+  overflow: auto;
+}
+
+.task-form {
   width: 60%;
   margin: 0 auto;
 }
@@ -48,4 +49,45 @@
 
 .task-cat-btn button:disabled {
   background: hsla(0, 0%, 100%, 0.37);
+}
+
+@media only screen and (max-width: 1400px) {
+  .task-form {
+    width: 80%;
+  }
+}
+
+@media only screen and (max-width: 990px) {
+  .task-form-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .task-cat-btn {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .task-cat-btn select {
+    width: 100%;
+    margin: 0;
+  }
+
+  .task-cat-btn button {
+    width: calc(50% - 3px);
+    margin: 10px 0 !important;
+  }
+
+  .task-cat-btn button:first-of-type {
+    margin-right: 5px !important;
+  }
+
+  .task-form {
+    width: 100%;
+  }
+
+  .task-date > * {
+    flex-direction: column;
+    width: 100%;
+  }
 }

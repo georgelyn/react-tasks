@@ -40,7 +40,7 @@ export default function Login() {
   return (
     <>
       <Loader show={showLoader} />
-      <Container className="login d-flex flex-column align-items-center justify-content-center">
+      <Container className="login d-flex flex-column align-items-center justify-content-center overflow-auto">
         <h1 className="text-center mb-5">Tasks</h1>
         <Form className="login-form" onSubmit={handleSubmit}>
           {error && (

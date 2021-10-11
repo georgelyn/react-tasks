@@ -1,11 +1,13 @@
 .login {
-  margin-top: 100px;
+  padding-top: 100px;
+  padding-bottom: 100px;
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
   width: 500px;
+  max-width: 100%;
 }
 
 .login-btn {

@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCat, faBars } from '@fortawesome/free-solid-svg-icons';
 import { ICategory } from '../../models';
 import './CategoryList.css';
 
@@ -6,9 +9,17 @@ export default function CategoryList(props: {
   filterTasksByCategory: any;
   selectedCategory: string;
 }) {
+  const [toggle, setToggle] = useState(false);
   return (
     <>
-      <div className="sidebar">
+      <div className={`sidebar ${toggle ? 'sidebar-toggle' : ''}`}>
+        <FontAwesomeIcon
+          icon={faBars}
+          className={'sidebar-fa-bars'}
+          onClick={() => {
+            setToggle(!toggle);
+          }}
+        ></FontAwesomeIcon>
         <ul>
           {props.categories.map((category, index) => {
             if (category.id) {

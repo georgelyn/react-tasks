@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button, Container, Form, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBars } from '@fortawesome/free-solid-svg-icons';
 import Header from '../../components/layout/Header';
 import AddCategory from '../../components/category/AddCategory';
 import Loader from '../../components/layout/Loader';
@@ -22,6 +22,7 @@ export default function CategoryDetails() {
     showAddCategoryModal: false,
   });
 
+  const [toggle, setToggle] = useState(false);
   const loaderRef = useRef(true);
 
   useEffect(() => {
@@ -142,6 +143,13 @@ export default function CategoryDetails() {
       <div className="categories-container">
         <div className="categories">
           <div className="categories-header">
+            <FontAwesomeIcon
+              className={'category-fa-bars'}
+              icon={faBars}
+              onClick={() => {
+                setToggle(!toggle);
+              }}
+            ></FontAwesomeIcon>
             <p>Categories</p>
             <button
               onClick={() => setState({ ...state, showAddCategoryModal: true })}
@@ -149,7 +157,9 @@ export default function CategoryDetails() {
               <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
             </button>
           </div>
-          <div className="category-list">
+          <div
+            className={`category-list ${toggle ? 'category-list-toggle' : ''}`}
+          >
             <ul>
               {categories.map((cat, index) => {
                 if (cat.id) {
@@ -174,7 +184,7 @@ export default function CategoryDetails() {
             className="category-form-container mt-5"
             onSubmit={handleSubmit}
           >
-            <Form.Group className="d-flex justify-content-end align-items-center">
+            <Form.Group className="d-flex justify-content-end align-items-center category-date-row">
               <Form.Label className="category-date">Date added:</Form.Label>
               <Form.Control
                 type="text"
@@ -194,7 +204,7 @@ export default function CategoryDetails() {
               value={state.category?.name ?? ''}
               onChange={handleChange}
             />
-            <br />
+            {/* <br /> */}
             <Form.Control
               as="textarea"
               placeholder="Description"

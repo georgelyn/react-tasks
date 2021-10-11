@@ -1,8 +1,8 @@
 .home-container {
   display: grid;
   grid-template-areas: 'filter-btn filter-btn filter-btn' 'sidebar tasks tasks';
-  grid-template-columns: 250px auto;
-  overflow: auto;
+  grid-template-columns: max-content auto;
+  overflow: hidden auto;
   padding-top: 1em;
 }
 
@@ -35,4 +35,23 @@
   /* background: #474d5841 !important; */
   background: hsla(0, 0%, 100%, 0.2) !important;
   color: #fff !important;
+}
+
+@media only screen and (max-width: 700px) {
+  .home-container {
+    height: 100vh;
+    /* grid-template-areas: 'filter-btn filter-btn filter-btn' 'sidebar sidebar tasks'; */
+    grid-template-areas: 'filter-btn filter-btn filter-btn' 'sidebar sidebar sidebar' 'tasks tasks tasks';
+    grid-template-columns: unset;
+  }
+
+  .home-filter-btn {
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .home-filter-btn button {
+    width: 80%;
+  }
 }
