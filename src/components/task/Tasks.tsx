@@ -1,23 +1,26 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Button, Container, Modal } from 'react-bootstrap';
-import TasksDataService from '../../services';
-import { ITask } from '../../models/task.model';
-import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { useHistory } from 'react-router-dom';
+import TasksDataService from '../../services';
+import { ITask } from '../../models/task.model';
 import { formatDate } from '../../utils';
+import './Tasks.css';
 
 export default function Tasks(props: { tasks: ITask[] }) {
   const [modalOptions, setModalOptions] = useState({
     show: false,
-    message: 'Are you sure you want to delete this task?',
+    title: '',
+    message: '',
+    buttonClass: '',
+    buttonText: '',
     taskId: '',
   });
 
   const history = useHistory();
 
-  const handleDelete = () => {
+  const deleteTask = () => {
     try {
       TasksDataService.deleteTask(modalOptions.taskId);
       setModalOptions({ ...modalOptions, show: false });
@@ -34,18 +37,43 @@ export default function Tasks(props: { tasks: ITask[] }) {
     }
   };
 
-  const setCompletionState = (task: ITask) => {
-    task.dateCompleted = !task.completed ? new Date() : null;
-    task.completed = !task.completed;
-    TasksDataService.updateTask(task);
+  const handleClick = (task: ITask) => {
+    const statusText = task.completed ? 'pending' : 'complete';
+
+    setModalOptions({
+      ...modalOptions,
+      show: true,
+      message: `Do you want to mark this task as ${statusText}?`,
+      buttonClass: 'dark',
+      buttonText: `Mark as ${statusText}`,
+      taskId: task.id!,
+    });
+  };
+
+  const setCompletionState = () => {
+    const task = props.tasks.find((x) => x.id === modalOptions.taskId);
+    if (task) {
+      task.dateCompleted = !task.completed ? new Date() : null;
+      task.completed = !task.completed;
+      TasksDataService.updateTask(task).then(() =>
+        setModalOptions({ ...modalOptions, show: false })
+      );
+    }
   };
 
   const handleClose = () => {
     setModalOptions({ ...modalOptions, show: false });
   };
 
-  const handleModal = (id: string) => {
-    setModalOptions({ ...modalOptions, show: true, taskId: id });
+  const handleDelete = (id: string) => {
+    setModalOptions({
+      ...modalOptions,
+      show: true,
+      message: 'Are you sure you want to delete this task?',
+      buttonClass: 'danger',
+      buttonText: 'Delete',
+      taskId: id,
+    });
   };
 
   return (
@@ -60,15 +88,21 @@ export default function Tasks(props: { tasks: ITask[] }) {
         </Modal.Header>
         <Modal.Body>{modalOptions.message}</Modal.Body>
         <Modal.Footer>
-          <Button variant="danger" onClick={handleDelete}>
-            Delete
+          <Button
+            variant={modalOptions.buttonClass}
+            onClick={
+              modalOptions.buttonClass === 'danger'
+                ? () => deleteTask()
+                : () => setCompletionState()
+            }
+          >
+            {modalOptions.buttonText}
           </Button>
         </Modal.Footer>
       </Modal>
       <Container className="tasks-container">
         <div className="grid-wrapper">
           {props.tasks.map((task) => (
-            // <div className="task-item">
             <div
               className={`tasks-content flow ${
                 task.completed ? 'tasks-completed' : ''
@@ -84,7 +118,7 @@ export default function Tasks(props: { tasks: ITask[] }) {
                 </div>
                 <div
                   className="fa-icon-trash"
-                  onClick={() => handleModal(task.id!)}
+                  onClick={() => handleDelete(task.id!)}
                 >
                   <FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon>
                 </div>
@@ -100,13 +134,9 @@ export default function Tasks(props: { tasks: ITask[] }) {
               <div className="tasks-title">
                 <h3>{task.subject}</h3>
               </div>
-              <div
-                className="tasks-desc"
-                onClick={() => setCompletionState(task)}
-              >
+              <div className="tasks-desc" onClick={() => handleClick(task)}>
                 <p>{task.description}</p>
               </div>
-              {/* </div> */}
             </div>
           ))}
         </div>

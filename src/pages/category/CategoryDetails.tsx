@@ -17,8 +17,13 @@ export default function CategoryDetails() {
     category: {} as ICategory,
     enabled: false,
     updated: false,
-    showModal: false,
-    modalMessage: '',
+    modal: {
+      show: false,
+      title: '',
+      message: '',
+      buttonClass: '',
+      buttonText: '',
+    },
     showAddCategoryModal: false,
   });
 
@@ -58,8 +63,13 @@ export default function CategoryDetails() {
           category: {} as ICategory,
           enabled: false,
           updated: !state.updated,
-          showModal: true,
-          modalMessage: 'The category has been successfully updated.',
+          modal: {
+            show: true,
+            title: 'Information',
+            message: 'The category has been successfully updated.',
+            buttonClass: 'secondary',
+            buttonText: 'Close',
+          },
         });
       });
     } catch (error) {
@@ -80,15 +90,36 @@ export default function CategoryDetails() {
 
   const handleDelete = () => {
     if (state.category.id) {
+      setState({
+        ...state,
+        modal: {
+          show: true,
+          title: 'Confirmation',
+          message: 'Are you sure you want to delete this category?',
+          buttonClass: 'danger',
+          buttonText: 'Delete',
+        },
+      });
+    }
+  };
+
+  const deleteCategory = () => {
+    if (state.category.id) {
       showLoader(true);
+
       TasksDataService.deleteCategory(state.category.id).then(() => {
         setState({
           ...state,
           category: {} as ICategory,
           enabled: false,
           updated: !state.updated,
-          showModal: true,
-          modalMessage: 'The category has been successfully deleted.',
+          modal: {
+            show: true,
+            title: 'Information',
+            message: 'The category has been successfully deleted.',
+            buttonClass: 'secondary',
+            buttonText: 'Close',
+          },
         });
       });
       showLoader(false);
@@ -96,7 +127,7 @@ export default function CategoryDetails() {
   };
 
   const handleClose = () => {
-    setState({ ...state, showModal: false });
+    setState({ ...state, modal: { ...state.modal, show: false } });
   };
 
   const handleCategoryModal = (category?: { name: string; id: string }) => {
@@ -126,17 +157,27 @@ export default function CategoryDetails() {
         handleCategoryModal={handleCategoryModal}
       />
       <Modal
-        show={state.showModal}
+        show={state.modal.show}
         onHide={handleClose}
         className="tasks-modal"
+        // {...(state.modal.buttonClass === 'danger' && {
+        //   onClick: () => alert('clic registrado...'),
+        // })}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Information</Modal.Title>
+          <Modal.Title>{state.modal.title}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>{state.modalMessage}</Modal.Body>
+        <Modal.Body>{state.modal.message}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
+          <Button
+            variant={state.modal.buttonClass}
+            onClick={
+              state.modal.buttonClass === 'danger'
+                ? () => deleteCategory()
+                : () => handleClose()
+            }
+          >
+            {state.modal.buttonText}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -204,7 +245,6 @@ export default function CategoryDetails() {
               value={state.category?.name ?? ''}
               onChange={handleChange}
             />
-            {/* <br /> */}
             <Form.Control
               as="textarea"
               placeholder="Description"

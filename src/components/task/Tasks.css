@@ -2,9 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Amiko:wght@600&display=swap');
 
 .tasks-container {
-  margin-bottom: 10px;
   grid-area: tasks;
-  /* height: 100vh; */
 }
 
 .grid-wrapper {
@@ -42,6 +40,7 @@
   scrollbar-width: none; /* Firefox */
   /* font-family: 'Merienda', serif; */
   font-family: 'Oxygen', sans-serif;
+  white-space: pre-line;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -104,16 +103,23 @@
   }
 }
 
-/* Masonry on medium-sized screens */
 @media only screen and (max-width: 1023px) {
   .grid-wrapper {
     column-count: 2;
   }
 }
 
-/* Masonry on small screens */
 @media only screen and (max-width: 700px) {
   .grid-wrapper {
     column-count: 1;
+  }
+
+  .tasks-content p {
+    -ms-overflow-style: unset;
+    scrollbar-width: unset;
+  }
+
+  .tasks-content p::-webkit-scrollbar {
+    display: unset;
   }
 }

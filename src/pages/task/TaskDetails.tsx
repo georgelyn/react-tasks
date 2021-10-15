@@ -112,9 +112,6 @@ export default function TaskDetails() {
 
   const handleChange = (event: any) => {
     let value = event.target.value;
-    // if (event.target.id.includes('date')) {
-    //   // value = new Date(event.target.value.toString());
-    // }
 
     setState({ ...state, task: { ...state.task, [event.target.id]: value } });
   };
@@ -139,7 +136,7 @@ export default function TaskDetails() {
   };
 
   const validateDate = () => {
-    let date = state.task.dateCompleted?.toString() ?? '';
+    let date = formatDate(state.task.dateCompleted) ?? '';
     const checkDate = Date.parse(date);
     if (isNaN(checkDate) && date !== '') {
       setError(
@@ -152,7 +149,7 @@ export default function TaskDetails() {
           ...state,
           task: {
             ...state.task,
-            dateCompleted: new Date(date),
+            dateCompleted: date,
           },
         });
       }

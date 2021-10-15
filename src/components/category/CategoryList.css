@@ -4,7 +4,7 @@
   width: 250px;
   height: max-content;
   max-height: 400px;
-  overflow-y: auto;
+  overflow: hidden auto;
   grid-area: sidebar;
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -32,7 +32,7 @@
   align-items: center;
   background: hsla(0, 0%, 100%, 0.2);
   width: 70%;
-  height: 2.5em;
+  height: max-content;
   /* text-align: center; */
   border-radius: 5px;
   padding: 5px;
@@ -68,7 +68,7 @@
   cursor: pointer;
 }
 
-@media only screen and (max-width: 1023px) {
+@media only screen and (max-width: 1026px) {
   .sidebar {
     display: flex;
     width: max-content;
@@ -80,16 +80,25 @@
   }
 
   .sidebar ul {
-    display: none;
+    /* display: none; */
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
   }
 
   .sidebar-toggle {
     width: 100%;
     height: 200px;
+    max-width: 250px;
   }
 
   .sidebar-toggle > ul {
-    display: block;
+    /* transition: visibility 0s, opacity 0.5s linear; */
+    transition: opacity 0.5s ease-in;
+    visibility: visible;
+    opacity: 1;
+    position: static;
+    /* display: block; */
     margin-left: 20px;
     max-width: 100%;
     overflow: auto;
@@ -106,7 +115,11 @@
   }
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 1026px) {
+  .sidebar-toggle {
+    max-width: 100%;
+  }
+
   .sidebar-toggle > ul {
     display: block;
     margin-left: 20px;

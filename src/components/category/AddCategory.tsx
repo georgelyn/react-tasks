@@ -71,7 +71,7 @@ export default function AddCategory(props: {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleSubmit}>
+          <Button variant="dark" onClick={handleSubmit}>
             Save
           </Button>
         </Modal.Footer>

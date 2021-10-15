@@ -61,7 +61,7 @@ class TasksDataService {
 
   async addCategory(category: ICategory) {
     const item = await addDoc(db.categories, category);
-    updateDoc(item, { id: item.id });
+    await updateDoc(item, { id: item.id });
     return item.id;
   }
 
@@ -89,30 +89,8 @@ class TasksDataService {
       }
     }
 
-    return query(
-      collection,
-      ...filteredQuery /*, orderBy('dateAdded', 'asc')*/
-    );
+    return query(collection, ...filteredQuery);
   }
-
-  // getSimpleQuery(
-  //   collection: CollectionReference<DocumentData>,
-  //   queryFields: { field: string; value: string }[]
-  // ) {
-  //   let filteredQuery: QueryConstraint[] = [];
-
-  //   if (queryFields.length == 0) {
-  //     return collection;
-  //   }
-
-  //   for (let i = 0; i < queryFields.length; i++) {
-  //     filteredQuery.push(
-  //       where(`${queryFields[i].field}`, '==', `${queryFields[i].value}`)
-  //     );
-  //   }
-
-  //   return query(collection, ...filteredQuery);
-  // }
 }
 
 export default new TasksDataService();

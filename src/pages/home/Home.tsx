@@ -68,13 +68,13 @@ export default function Home() {
         category: {},
         state: {},
       });
+      stateFilter.current = '';
       selectedCategory.current = '';
     }
   };
 
   const filterTasksByCompletionState = (event: any) => {
     showLoader(true);
-    // console.log('filterTasksByCompletionState');
     const state = event.target.id;
 
     if (stateFilter.current === state || state === 'all') {
@@ -130,11 +130,13 @@ export default function Home() {
             Pending tasks
           </button>
         </div>
-        <CategoryList
-          categories={categories}
-          filterTasksByCategory={filterTasksByCategory}
-          selectedCategory={selectedCategory.current}
-        />
+        <div className="categories-list">
+          <CategoryList
+            categories={categories}
+            onClick={filterTasksByCategory}
+            selectedCategory={selectedCategory.current}
+          />
+        </div>
         <Tasks tasks={tasks} />
       </div>
     </>

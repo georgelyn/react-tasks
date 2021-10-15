@@ -6,7 +6,7 @@ import './CategoryList.css';
 
 export default function CategoryList(props: {
   categories: ICategory[];
-  filterTasksByCategory: any;
+  onClick(param: any): void;
   selectedCategory: string;
 }) {
   const [toggle, setToggle] = useState(false);
@@ -21,7 +21,7 @@ export default function CategoryList(props: {
           }}
         ></FontAwesomeIcon>
         <ul>
-          {props.categories.map((category, index) => {
+          {props.categories.map((category) => {
             if (category.id) {
               return (
                 <li
@@ -32,7 +32,7 @@ export default function CategoryList(props: {
                   }
                   key={category.id}
                   onClick={() => {
-                    props.filterTasksByCategory({
+                    props.onClick({
                       field: 'categoryId',
                       value: `${category.id}`,
                     });
