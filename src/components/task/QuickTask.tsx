@@ -2,7 +2,7 @@ import { Alert, Button, Modal, Form } from 'react-bootstrap';
 import { useState } from 'react';
 import { ITask } from '../../models/task.model';
 import TasksDataService from '../../services';
-import { currentUserId } from '../../contexts/AuthContext';
+import { getCurrentUserId } from '../../contexts/AuthContext';
 
 export default function QuickTask(props: {
   showModal: boolean;
@@ -24,7 +24,7 @@ export default function QuickTask(props: {
         dateAdded: new Date(),
         dateCompleted: null,
         categoryId: null,
-        userId: currentUserId(),
+        userId: getCurrentUserId(),
       };
       try {
         TasksDataService.addTask(newTask);

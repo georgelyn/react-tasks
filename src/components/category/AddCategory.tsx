@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Alert, Button, Modal, Form } from 'react-bootstrap';
 import { ICategory } from '../../models/category.model';
 import TasksDataService from '../../services';
-import { currentUserId } from '../../contexts/AuthContext';
+import { getCurrentUserId } from '../../contexts/AuthContext';
 
 export default function AddCategory(props: {
   showModal: boolean;
@@ -19,7 +19,7 @@ export default function AddCategory(props: {
         name: nameRef.current?.value.trim(),
         description: descriptionRef.current?.value.trim() ?? '',
         dateAdded: new Date(),
-        userId: currentUserId(),
+        userId: getCurrentUserId(),
       };
       try {
         const id = await TasksDataService.addCategory(category);

@@ -13,14 +13,6 @@ const PrivateRoute: React.FunctionComponent<RouteProps> = ({
   ) : (
     <Redirect to="/login" />
   );
-
-  // return <Route {...routeProps} component={RouteComponent} />;
-  // return (
-  //   // <Route
-  //   //   {...routeProps}
-  //   //   render={(props) => (user ? <Component /> : <Redirect to="/login" />)}
-  //   // />
-  // );
 };
 
 export default PrivateRoute;

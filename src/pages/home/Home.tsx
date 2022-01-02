@@ -7,14 +7,14 @@ import CategoryList from '../../components/category/CategoryList';
 import Loader from '../../components/layout/Loader';
 import { ITask, ICategory, IQueryFields } from '../../models';
 import TasksDataService from '../../services';
-import { currentUserId } from '../../contexts/AuthContext';
+import { getCurrentUserId } from '../../contexts/AuthContext';
 import './Home.css';
 
 export default function Home() {
   const [tasks, setTasks] = useState([] as ITask[]);
   const [categories, setCategories] = useState([] as ICategory[]);
   const [filter, setFilter] = useState<IQueryFields>({
-    user: { field: 'userId', value: `${currentUserId()}` },
+    user: { field: 'userId', value: `${getCurrentUserId()}` },
   } as IQueryFields);
 
   const selectedCategory = useRef('');
@@ -35,7 +35,7 @@ export default function Home() {
       setTasks(taskCollection);
     });
 
-    TasksDataService.getCategories(currentUserId()).then((data) => {
+    TasksDataService.getCategories(getCurrentUserId()).then((data) => {
       data.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
       setCategories(data);
     });
@@ -59,7 +59,6 @@ export default function Home() {
       setFilter({
         ...filter,
         category: { field: 'categoryId', value: `${filterQuery.value}` },
-        state: {},
       });
       selectedCategory.current = filterQuery.value;
     } else {

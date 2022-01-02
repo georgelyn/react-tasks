@@ -42,7 +42,7 @@ export const logOut = () => {
   return auth.signOut();
 };
 
-export const currentUserId = (): string => {
+export const getCurrentUserId = (): string => {
   return auth.currentUser?.uid ?? '';
 };
 

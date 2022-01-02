@@ -6,7 +6,7 @@ import AddCategory from '../../components/category/AddCategory';
 import Loader from '../../components/layout/Loader';
 import { ITask, ICategory } from '../../models';
 import TasksDataService from '../../services';
-import { currentUserId } from '../../contexts/AuthContext';
+import { getCurrentUserId } from '../../contexts/AuthContext';
 import { formatDate } from '../../utils';
 import './TaskDetails.css';
 
@@ -41,7 +41,7 @@ export default function TaskDetails() {
       setText('Update Task');
     }
 
-    TasksDataService.getCategories(currentUserId())
+    TasksDataService.getCategories(getCurrentUserId())
       .then((data) => {
         data.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
         setCategories(data);
@@ -98,7 +98,7 @@ export default function TaskDetails() {
           dateAdded: new Date(),
           dateCompleted: null,
           categoryId: categoryId,
-          userId: currentUserId(),
+          userId: getCurrentUserId(),
         };
         TasksDataService.addTask(newTask);
       }

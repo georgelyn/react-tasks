@@ -6,7 +6,7 @@ import Header from '../../components/layout/Header';
 import AddCategory from '../../components/category/AddCategory';
 import Loader from '../../components/layout/Loader';
 import { ICategory } from '../../models';
-import { currentUserId } from '../../contexts/AuthContext';
+import { getCurrentUserId } from '../../contexts/AuthContext';
 import TasksDataService from '../../services';
 import { formatDate } from '../../utils';
 import './CategoryDetails.css';
@@ -32,7 +32,7 @@ export default function CategoryDetails() {
 
   useEffect(() => {
     showLoader(true);
-    TasksDataService.getCategories(currentUserId()).then((data) => {
+    TasksDataService.getCategories(getCurrentUserId()).then((data) => {
       data.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
       setCategories(data);
     });
