@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import {
   createUserWithEmailAndPassword,
+  signInAnonymously,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
@@ -14,6 +15,15 @@ interface IAuthContextState {
 }
 
 export const AuthContext = React.createContext({} as IAuthContextState);
+
+export const loginAsGuest = async () => {
+  return signInAnonymously(auth)
+    .then((user) => {
+    })
+    .catch((error) => {
+      throw new Error(error);
+  })
+}
 
 export const login = async (email: string, password: string) => {
   return signInWithEmailAndPassword(auth, email, password)

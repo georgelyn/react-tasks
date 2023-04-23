@@ -3,7 +3,7 @@ import { Alert, Button, Container, Form } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import Loader from '../../components/layout/Loader';
 import { firebaseError, firebaseErrorMap } from '../../utils';
-import { login } from '../../contexts/AuthContext';
+import { login, loginAsGuest } from '../../contexts/AuthContext';
 import './Login.css';
 
 export default function Login() {
@@ -36,6 +36,18 @@ export default function Login() {
       setShowLoader(false);
     }
   };
+
+  const handleGuestLogin = async () => {
+    setShowLoader(true);
+    try {
+      await loginAsGuest();
+      history.push('/');
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setShowLoader(false);
+    }
+  }
 
   return (
     <>
@@ -74,6 +86,9 @@ export default function Login() {
           </Button>
           <div className="w-100 text-center mt-2">
             Don't have an account? <Link to="/signup">Sign Up</Link>
+          </div>
+          <div className="w-100 text-center mt-2">
+            <Link to="#" onClick={() => handleGuestLogin()}>Login as guest</Link>
           </div>
         </Form>
       </Container>
