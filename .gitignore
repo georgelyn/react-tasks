@@ -18,3 +18,8 @@
 .env.test.local
 .env.production.local
 # *.local
+
+# firebase
+firebase.json
+.firebase*
+firestore*
