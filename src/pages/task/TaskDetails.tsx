@@ -9,6 +9,8 @@ import TasksDataService from '../../services';
 import { getCurrentUserId } from '../../contexts/AuthContext';
 import { formatDate } from '../../utils';
 import './TaskDetails.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 interface IRouteParams {
   id: string;
@@ -169,31 +171,46 @@ export default function TaskDetails() {
           {error && <Alert variant="warning">{error}</Alert>}
           <Form.Group
             as={Row}
-            className="mb-3 d-flex justify-content-end task-date"
+            className='task-header d-flex justify-content-between'
           >
-            <Form.Label column sm="2" className="task-date-label">
-              Date added:
-            </Form.Label>
             <Col sm="2">
-              <Form.Control
-                type="text"
-                readOnly={disabled}
-                value={formatDate(state.task?.dateAdded) ?? ''}
-                id="dateAdded"
-              />
-            </Col>
-            <Form.Label column sm="2" className="task-date-label">
-              Date completed:
-            </Form.Label>
-            <Col sm="2">
-              <Form.Control
-                type="text"
-                readOnly={!state.task.completed}
-                value={formatDate(state.task.dateCompleted) ?? ''}
-                onChange={handleChange}
-                id="dateCompleted"
-                onBlur={validateDate}
-              />
+              <FontAwesomeIcon
+                onClick={() => history.goBack()}
+                icon={faArrowLeft}
+                className={'task-go-back'}
+                  ></FontAwesomeIcon>
+              </Col>
+
+              <Col sm="10">
+                <Form.Group
+                as={Row}
+                className="mb-3 d-flex justify-content-end task-date"
+              >
+                <Form.Label column sm="2" className="task-date-label">
+                  Date added:
+                </Form.Label>
+                <Col sm="3">
+                  <Form.Control
+                    type="text"
+                    readOnly={disabled}
+                    value={formatDate(state.task?.dateAdded) ?? ''}
+                    id="dateAdded"
+                  />
+                </Col>
+                <Form.Label column sm="2" className="task-date-label">
+                  Date completed:
+                </Form.Label>
+                <Col sm="3">
+                  <Form.Control
+                    type="text"
+                    readOnly={!state.task.completed}
+                    value={formatDate(state.task.dateCompleted) ?? ''}
+                    onChange={handleChange}
+                    id="dateCompleted"
+                    onBlur={validateDate}
+                  />
+                </Col>
+              </Form.Group>
             </Col>
           </Form.Group>
           <Form.Control
